@@ -15,7 +15,7 @@
     "perf_hooks": "^0.0.1",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "snarkjs": "git+https://github.com/nalinbhardwaj/snarkjs.git#d1c10a6373c02eaa214968da96e2514ddc8c8b92"
+    "snarkjs": "^0.4.15"
   },
   "devDependencies": {
     "@types/node": "17.0.23",
