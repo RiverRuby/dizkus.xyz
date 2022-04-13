@@ -1,4 +1,29 @@
 const snarkjs = require("snarkjs");
+const downloadFile = require("downloadjs");
+
+function downloadFromLink(link: string): Promise<void | Response> {
+  let headers = new Headers();
+  headers.append('Content-Disposition', 'attachment');
+  return fetch(link, {
+      method : "GET",
+      mode: 'no-cors',
+      headers: headers
+    })
+    .then( res => res.blob() )
+    .then( blob => {
+      downloadFile(blob);
+    });
+}
+
+export const downloadProofFiles = async function (filename: string) {
+  const zkeySuffix = ['b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'];
+  const filePromises: Promise<void | Response>[] = [];
+  for (const c of zkeySuffix) {
+    filePromises.push(downloadFromLink(`https://d27ahxc61uj811.cloudfront.net/${filename}.zkey${c}`));
+  }
+  filePromises.push(downloadFromLink(`https://d27ahxc61uj811.cloudfront.net/${filename}.wasm`));
+  await Promise.all(filePromises);
+}
 
 export const generateProof = async function (filename: string) {
   const input = await fetch(`./input_${filename}.json`).then(function(res) {
