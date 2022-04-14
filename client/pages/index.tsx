@@ -20,18 +20,20 @@ const Home: NextPage = () => {
 
   async function buttonDownloadFiles() {
     setDownloading(true);
+    console.time(`Downloading files for ${proofType}`);
     await downloadProofFiles(proofType);
+    console.timeEnd(`Downloading files for ${proofType}`);
     setDownloading(false);
   }
   
   async function buttonGenerateProof() {
-    setProofCount(proofCount+1);
-
     setGenerating(true);
     console.time(`Generating proof ${proofCount}`);
     const res = await generateProof(proofType);
     console.timeEnd(`Generating proof ${proofCount}`);
     setGenerating(false);
+
+    setProofCount(proofCount+1);
 
     setProof(res.proof);
     setPublicSignals(res.publicSignals);

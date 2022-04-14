@@ -12,11 +12,12 @@
     "antd": "^4.19.5",
     "downloadjs": "^1.4.7",
     "fs": "^0.0.1-security",
+    "localforage": "^1.10.0",
     "next": "12.1.4",
     "perf_hooks": "^0.0.1",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "snarkjs": "git+https://github.com/nalinbhardwaj/snarkjs.git#d1c10a6373c02eaa214968da96e2514ddc8c8b92"
+    "snarkjs": "git+https://github.com/vb7401/snarkjs.git#fd9612892ec37f60f5ad492868caacbd44a259ab"
   },
   "devDependencies": {
     "@types/node": "17.0.23",

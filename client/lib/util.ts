@@ -1,27 +1,45 @@
-const snarkjs = require("snarkjs");
-const downloadFile = require("downloadjs");
+// this is adapted from
+// https://github.com/0xPARC/cabal/blob/main/snap/src/snark_utils/generate_proof.js
+// https://github.com/doubleblind-xyz/double-blind/blob/master/src/pages/SetupPage.tsx
 
-function downloadFromLink(link: string): Promise<void | Response> {
-  let headers = new Headers();
-  headers.append('Content-Disposition', 'attachment');
-  return fetch(link, {
-      method : "GET",
-      mode: 'no-cors',
-      headers: headers
-    })
-    .then( res => res.blob() )
-    .then( blob => {
-      downloadFile(blob);
+
+const snarkjs = require("snarkjs");
+import localforage from "localforage";
+
+const loadURL = "https://dizkus-xyz-zkey-test-store.s3.us-east-2.amazonaws.com/";
+
+async function downloadFromFilename(filename: string) {
+  const link = loadURL + filename;
+  try {
+    const zkeyResp = await fetch(link, {
+      method: 'GET'
     });
+    const zkeyBuff = await zkeyResp.arrayBuffer();
+    await localforage.setItem(
+      filename,
+      zkeyBuff
+    );
+    console.log(
+      `Storage of ${filename} successful!`
+    );
+  } catch (e) {
+    console.log(
+      `Storage of ${filename} unsuccessful, make sure IndexedDB is enabled in your browser.`
+    );
+  }
 }
 
 export const downloadProofFiles = async function (filename: string) {
   const zkeySuffix = ['b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'];
-  const filePromises: Promise<void | Response>[] = [];
+  const filePromises = [];
   for (const c of zkeySuffix) {
-    filePromises.push(downloadFromLink(`https://d27ahxc61uj811.cloudfront.net/${filename}.zkey${c}`));
+    const item = await localforage.getItem(`${filename}.zkey${c}`);
+    if (item) {
+      console.log(`${filename}.zkey${c} already exists!`);
+      continue;
+    }
+    filePromises.push(downloadFromFilename(`${filename}.zkey${c}`));
   }
-  filePromises.push(downloadFromLink(`https://d27ahxc61uj811.cloudfront.net/${filename}.wasm`));
   await Promise.all(filePromises);
 }
 
@@ -34,7 +52,7 @@ export const generateProof = async function (filename: string) {
     await snarkjs.groth16.fullProve(
       input,
       `./${filename}.wasm`,
-      `./${filename}.zkey`
+      `${filename}.zkey`
     );
   
   return {

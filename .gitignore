@@ -1,3 +1,4 @@
 client/public/
+client/zkeys/
 node_modules/
 pot*.ptau
