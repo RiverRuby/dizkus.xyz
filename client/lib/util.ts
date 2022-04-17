@@ -6,7 +6,7 @@
 const snarkjs = require("snarkjs");
 import localforage from "localforage";
 
-const loadURL = "https://dizkus-xyz-zkey-test-store.s3.us-east-2.amazonaws.com/";
+const loadURL = "https://d27ahxc61uj811.cloudfront.net/";
 
 async function downloadFromFilename(filename: string) {
   const link = loadURL + filename;
